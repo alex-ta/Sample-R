@@ -1,10 +1,12 @@
 #install.packages("nnet")
 #install.packages("timeSeries")
-load("~/R/Sample_1/03_fuelCell.RData")
+#install.packages("plotly")
+load("~/Sample-R/03_fuelCell.RData")
 #plot(A$I)
 #plot(B$I)
 library(timeSeries)
 library(nnet)
+library(plotly)
 
 #z-score scaling => zu werten zwischen -pi und pi
 zAB <- data.frame(c(A$I,B$I),c(A$T,B$T),c(A$P_Air,B$P_Air),c(A$U,B$U))
@@ -67,6 +69,14 @@ pPA <- predict(nnA,zDataPruef)
 pPB <- predict(nnB,zDataPruef)
 #E2
 
+frame <- data.frame(zDataPruef,pPA,pPB)
+names(frame) <- c("I","T","P_Air","U_A","U_B")
+
+
+p <- plot_ly(data=frame, type="scatter") %>%
+  add_trace(x=~I, y=~U_A, name="Modle A Prediction", mode="markers") %>%
+  add_trace(x=~I, y=~U_B, name="Modle B Prediction", mode="markers") 
+show(p)
 # Error -> which type is the battery A or B
 
 
